@@ -1,6 +1,0 @@
-make: Entering directory 'd:/work/freelancehunt/markiyan/prject'
-echo "Starting up containers for Hertland Concept..."
-docker compose pull
-docker compose up -d --remove-orphans
-make: Leaving directory 'd:/work/freelancehunt/markiyan/prject'
- 

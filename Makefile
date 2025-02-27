@@ -10,6 +10,8 @@ help:
 	@echo "  clean     : Remove all containers, volumes, and data."
 	@echo "  reinstall : Clean everything and start fresh installation."
 	@echo "  logs      : View WordPress logs."
+	@echo "  exec      : Execute command in container (usage: make exec s=service cmd=command)"
+	@echo "  shell     : Access container's shell (usage: make shell s=service)"
 
 ## up	:	Start up containers.
 .PHONY: up
@@ -39,3 +41,28 @@ reinstall: clean up
 ## logs   : View WordPress logs
 logs:
 	docker compose exec wp tail -f /var/www/html/wp-content/debug.log
+
+## exec	:	Execute command in container (usage: make exec s=service cmd=command)
+.PHONY: exec
+exec:
+	@if not defined s ( \
+		echo Please specify a service (s=service). Available services: wp, db, mailpit, phpmyadmin & \
+		echo Example: make exec s=wp cmd='wp plugin list' & \
+		exit /b 1 \
+	)
+	@if not defined cmd ( \
+		echo Please specify a command (cmd=command) & \
+		echo Example: make exec s=wp cmd='wp plugin list' & \
+		exit /b 1 \
+	)
+	docker compose exec $(s) $(cmd)
+
+## shell	:	Access container's shell (usage: make shell s=service)
+.PHONY: shell
+shell:
+	@if not defined s ( \
+		echo Please specify a service (s=service). Available services: wp, db, mailpit, phpmyadmin & \
+		echo Example: make shell s=wp & \
+		exit /b 1 \
+	)
+	@docker compose exec $(s) bash || docker compose exec $(s) sh

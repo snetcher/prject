@@ -194,7 +194,7 @@ body {
 /* Header */
 .site-header {
     width: 100%;
-    padding: 1rem 0;
+    padding: 1rem 0 0;
     background: var(--background-light);
     box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
     border-bottom: 1px solid rgba(0, 255, 255, 0.1);
@@ -669,27 +669,88 @@ body {
 .entry-content table {
     width: 100%;
     margin: 1.5rem 0;
-    border-collapse: collapse;
-    border: 1px solid rgba(0, 255, 255, 0.1);
-}
-
-.entry-content th,
-.entry-content td {
-    padding: 0.75rem;
-    border: 1px solid rgba(0, 255, 255, 0.1);
-    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
 }
 
 .entry-content th {
-    background: rgba(0, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.6);
     color: var(--primary-color);
     font-family: 'Orbitron', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    padding: 1.25rem 1rem;
+    border-bottom: 2px solid var(--primary-color);
+    text-shadow: var(--neon-shadow);
+    position: relative;
+    font-size: 1.1rem;
 }
 
-.entry-content tr:hover {
-    background: rgba(0, 255, 255, 0.02);
+.entry-content th::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent,
+        var(--primary-color),
+        transparent
+    );
+}
+
+.entry-content td {
+    padding: 1rem;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.entry-content tr:nth-child(even) {
+    background: rgba(26, 26, 47, 0.6);
+}
+
+.entry-content tr:nth-child(odd) {
+    background: rgba(10, 10, 15, 0.8);
+}
+
+.entry-content tr:last-child td {
+    border-bottom: none;
+}
+
+.entry-content tr:hover td {
+    background: rgba(0, 255, 255, 0.1);
+    color: var(--text-color);
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+}
+
+.entry-content tr:hover td:first-child {
+    border-left: 2px solid var(--primary-color);
+}
+
+.entry-content tr:hover td:last-child {
+    border-right: 2px solid var(--primary-color);
+}
+
+@media screen and (max-width: 768px) {
+    .entry-content table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .entry-content th,
+    .entry-content td {
+        white-space: nowrap;
+        min-width: 120px;
+    }
 }
 
 /* Entry Footer */
@@ -1046,7 +1107,6 @@ body {
 .back-to-top:hover {
     background: var(--primary-color);
     color: var(--background-dark);
-    box-shadow: var(--neon-shadow);
     transform: translateY(-2px) scale(1.1);
 }
 
@@ -1062,26 +1122,6 @@ body {
     opacity: 1;
     visibility: visible;
     transform: translateY(0) scale(1);
-}
-
-@keyframes pulseGlow {
-    0% {
-        box-shadow: 0 0 5px var(--primary-color);
-    }
-    50% {
-        box-shadow: 0 0 20px var(--primary-color),
-                    0 0 30px var(--primary-color);
-    }
-    100% {
-        box-shadow: 0 0 5px var(--primary-color);
-    }
-}
-
-.back-to-top.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0) scale(1);
-    animation: pulseGlow 2s infinite;
 }
 
 /* Page Hero */
@@ -1202,6 +1242,10 @@ body {
 .comment-body:hover {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
     transform: translateY(-2px);
+}
+
+.comment-body a {
+    color: var(--text-color);
 }
 
 .comment-author {
@@ -1499,4 +1543,17 @@ body {
     color: var(--text-color-dim);
     cursor: pointer;
     margin: 0;
+}
+
+/* Стили для чередующихся строк таблицы */
+.wp-block-table.is-style-stripes tbody tr:nth-child(odd) {
+    background: rgba(10, 10, 15, 0.8);
+}
+
+.wp-block-table.is-style-stripes tbody tr:nth-child(even) {
+    background: rgba(26, 26, 47, 0.6);
+}
+
+.wp-block-table.is-style-stripes {
+    border-bottom: none;
 } 

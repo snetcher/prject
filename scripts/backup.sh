@@ -1,2 +1,4 @@
 #!/bin/bash
-# Скрипт для резервного копирования базы данных 
+# Database backup script
+# This script creates a backup of the WordPress database
+# Usage: ./backup.sh

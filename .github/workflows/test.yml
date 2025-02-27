@@ -21,20 +21,40 @@ jobs:
 
       - name: Wait for WordPress
         run: |
-          timeout 30s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
+          echo "Waiting for WordPress to be ready..."
+          timeout 120s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do 
+            echo "Waiting... Current status: $(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)"
+            docker compose ps
+            docker compose logs wp --tail 20
+            sleep 10
+          done' || false
 
       - name: Check WordPress response
         run: curl -I http://localhost:8080
 
       - name: Check MariaDB connection
-        run: docker compose exec -T db mysqladmin -u root -p${DB_ROOT_PASSWORD} ping
+        run: |
+          echo "Checking database connection..."
+          docker compose exec -T db mysqladmin -u root -p${DB_ROOT_PASSWORD} ping
+          echo "Database connection successful"
 
       - name: Check Mailpit
-        run: curl -I http://localhost:8025
+        run: |
+          echo "Checking Mailpit..."
+          curl -I http://localhost:8025
+          echo "Mailpit check completed"
 
       - name: Show logs on failure
         if: failure()
-        run: docker compose logs
+        run: |
+          echo "Docker compose status:"
+          docker compose ps
+          echo "WordPress logs:"
+          docker compose logs wp
+          echo "Database logs:"
+          docker compose logs db
+          echo "Mailpit logs:"
+          docker compose logs mailpit
 
       - name: Stop containers
         if: always()

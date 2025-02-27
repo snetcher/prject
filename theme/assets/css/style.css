@@ -115,7 +115,7 @@ body {
     margin-top: 5rem; /* Компенсация фиксированной шапки */
     flex: 1 0 auto;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 5rem auto 0;
     padding: 2rem 1rem;
 }
@@ -210,7 +210,7 @@ body {
 }
 
 .site-header-inner {
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 2rem;
 }
@@ -365,10 +365,15 @@ body {
     grid-template-columns: 1fr;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 920px) {
     .content-area {
-        grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+        grid-template-columns: minmax(0, 1fr) 350px;
         align-items: start;
+    }
+    
+    .widget-area {
+        width: 350px;
+        flex-shrink: 0;
     }
 }
 
@@ -445,7 +450,7 @@ body {
     opacity: 0.8;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 920px) {
     .hero-title {
         font-size: 4.5rem;
     }
@@ -483,6 +488,40 @@ body {
     border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: 5px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Post Meta */
+.post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--background-light);
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.post-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-color-dim);
+}
+
+.post-meta .author img {
+    border-radius: 50%;
+    border: 1px solid var(--primary-color);
+}
+
+.post-meta a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.post-meta a:hover {
+    color: var(--secondary-color);
+    text-shadow: var(--neon-shadow-alt);
 }
 
 /* Content Links */
@@ -739,7 +778,7 @@ body {
     border-right: 2px solid var(--primary-color);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 920px) {
     .entry-content table {
         display: block;
         overflow-x: auto;
@@ -784,7 +823,7 @@ body {
     margin-bottom: 1rem;
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (min-width: 920px) {
     .cat-links,
     .tags-links,
     .comments-link {
@@ -1204,7 +1243,7 @@ body {
     text-shadow: var(--neon-shadow-alt);
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 920px) {
     .page-hero {
         padding: 5rem 1rem 3rem;
     }

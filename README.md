@@ -13,10 +13,13 @@ This repository contains a Docker-based development environment for WordPress th
 ```
 .
 ├── .env                # Environment variables
-├── docker-compose.yml  # Docker services configuration
-├── Makefile           # Development commands
-├── plugin/            # Plugin development directory
-└── theme/             # Theme development directory
+├── .env.example       # Example environment file
+├── docker-compose.yml # Docker services configuration
+├── Makefile          # Development commands
+├── config/           # Configuration files
+│   └── mu-plugins/   # Must-use plugins
+├── plugin/           # Plugin development directory
+└── theme/           # Theme development directory
 ```
 
 ## Quick Start
@@ -31,6 +34,7 @@ cd [repository-name]
 ```bash
 cp .env.example .env
 ```
+⚠️ Make sure to change default passwords in your .env file!
 
 3. Start the development environment:
 ```bash
@@ -49,27 +53,41 @@ make up
 - `make down` - Stop the development environment
 - `make clean` - Remove all containers, volumes, and data
 - `make reinstall` - Perform a clean installation (removes all data and starts fresh)
+- `make logs` - View WordPress debug logs
+- `make status` - Show status of containers
 
 ## Environment Configuration
 
 The `.env` file contains the following configuration options:
 
 ```env
+# Project settings
 PROJECT_NAME=mywordpress    # Base name for containers, networks, and DB
+
+# Database settings
 DB_NAME=${PROJECT_NAME}_db  # Database name
 DB_USER=${PROJECT_NAME}_user
 DB_PASSWORD=your_secure_password
 DB_ROOT_PASSWORD=your_secure_root_password
+
+# WordPress settings
 WP_TABLE_PREFIX=${PROJECT_NAME}_
+
+# Theme and Plugin settings
+THEME_NAME=wp-start-theme    # Your theme directory name
+PLUGIN_NAME=wp-start-plugin  # Your plugin directory name
 ```
 
 ## Development
 
 ### Theme Development
-Place your theme files in the `theme/` directory. They will be automatically mounted to `/var/www/html/wp-content/themes/wp-start-theme` in the WordPress container.
+Place your theme files in the `theme/` directory. They will be automatically mounted to `/var/www/html/wp-content/themes/${THEME_NAME}` in the WordPress container.
 
 ### Plugin Development
-Place your plugin files in the `plugin/` directory. They will be automatically mounted to `/var/www/html/wp-content/plugins/wp-start-plugin` in the WordPress container.
+Place your plugin files in the `plugin/` directory. They will be automatically mounted to `/var/www/html/wp-content/plugins/${PLUGIN_NAME}` in the WordPress container.
+
+### Email Testing
+All emails sent by WordPress will be captured by Mailpit. You can view them at http://localhost:8025.
 
 ## Docker Services
 
@@ -79,19 +97,24 @@ The environment includes the following services:
   - PHP 8.2
   - Development mode enabled (WP_DEBUG and SCRIPT_DEBUG)
   - Port: 8080
+  - Custom theme and plugin mounting
+  - SMTP configured for email testing
 
 - **MariaDB (db)**
   - Latest version
   - Persistent data storage
+  - Container name: ${PROJECT_NAME}_db
 
 - **phpMyAdmin**
   - Web-based database management
   - Port: 8081
+  - Container name: ${PROJECT_NAME}_pma
 
 - **Mailpit**
   - Email testing interface
   - SMTP server port: 1025
   - Web interface port: 8025
+  - Container name: ${PROJECT_NAME}_mailpit
 
 ## Troubleshooting
 
@@ -102,20 +125,31 @@ make reinstall
 
 2. To access the database directly:
 ```bash
-docker exec -it [project-name]_db mysql -u root -p
+docker exec -it ${PROJECT_NAME}_db mysql -u root -p
 ```
 
-3. To view logs:
+3. To view WordPress logs:
 ```bash
-docker compose logs -f
+make logs
 ```
+
+4. To check container status:
+```bash
+make status
+```
+
+5. Common Issues:
+   - White screen of death: Check WordPress debug logs
+   - Email not working: Verify Mailpit is running
+   - Database connection issues: Check environment variables
 
 ## Security Notes
 
 - This is a development environment and is not suitable for production use
 - Change default passwords in the .env file
 - Consider changing the default table prefix for better security
-- Restrict access to phpMyAdmin in production environments
+- Restrict access to phpMyAdmin and Mailpit in production environments
+- Never commit .env file with real credentials
 
 ## License
 

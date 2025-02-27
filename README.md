@@ -224,3 +224,53 @@ When reporting issues, please include:
    - What happened?
    - What was expected?
    - Steps to reproduce 
+
+## CI/CD
+
+This project uses GitHub Actions for continuous integration testing. The CI pipeline:
+
+1. Tests the complete Docker environment setup
+2. Verifies all services are running correctly:
+   - WordPress availability
+   - Database connection
+   - Email service (Mailpit)
+3. Performs health checks on all containers
+4. Reports detailed logs on any failures
+
+### CI Environment Variables
+
+The following variables are used in the CI environment:
+
+```env
+DB_ROOT_PASSWORD=examplepass  # Default password for CI testing
+```
+
+### Test Workflow
+
+The test workflow includes:
+
+1. Environment setup
+2. Container initialization
+3. Service health checks
+4. Database connectivity verification
+5. WordPress availability check
+6. Email service verification
+
+To view test results:
+1. Go to the Actions tab in GitHub repository
+2. Select the latest workflow run
+3. Review the detailed logs and test results
+
+### Local Testing
+
+To run the same tests locally:
+
+```bash
+# Start fresh environment
+make reinstall
+
+# Check services manually
+curl http://localhost:8080  # Should return 200 or 302
+curl http://localhost:8025  # Should return 200
+docker compose exec db mariadb -uroot -p${DB_ROOT_PASSWORD} -e "SELECT 1;"
+``` 

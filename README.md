@@ -55,6 +55,23 @@ make up
 - `make reinstall` - Perform a clean installation (removes all data and starts fresh)
 - `make logs` - View WordPress debug logs
 - `make status` - Show status of containers
+- `make exec s=service cmd=command` - Execute command in container
+- `make shell s=service` - Access container's shell
+
+Examples:
+```bash
+# Execute WP-CLI command
+make exec s=wp cmd='wp plugin list'
+
+# Access WordPress container shell
+make shell s=wp
+
+# Access database shell
+make shell s=db
+
+# Execute MySQL query
+make exec s=db cmd='mysql -u root -p${DB_ROOT_PASSWORD} -e "SHOW DATABASES;"'
+```
 
 ## Environment Configuration
 
@@ -86,8 +103,30 @@ Place your theme files in the `theme/` directory. They will be automatically mou
 ### Plugin Development
 Place your plugin files in the `plugin/` directory. They will be automatically mounted to `/var/www/html/wp-content/plugins/${PLUGIN_NAME}` in the WordPress container.
 
-### Email Testing
-All emails sent by WordPress will be captured by Mailpit. You can view them at http://localhost:8025.
+### Email Configuration
+
+The environment includes Mailpit for email testing. All emails sent by WordPress will be automatically captured.
+
+1. Default configuration:
+   - SMTP Host: mailpit
+   - SMTP Port: 1025
+   - No authentication required
+   - TLS disabled
+
+2. Viewing emails:
+   - Open Mailpit interface: http://localhost:8025
+   - All sent emails will appear here immediately
+
+3. Testing email:
+   ```bash
+   # Send test email via WP-CLI
+   make exec s=wp cmd='wp eval "wp_mail(\"test@example.com\", \"Test Email\", \"This is a test\");"'
+   ```
+
+4. Troubleshooting:
+   - Check Mailpit is running: `docker compose ps mailpit`
+   - View mail logs: `docker compose logs mailpit`
+   - Check WordPress logs for mail errors: `make logs`
 
 ## Docker Services
 
@@ -306,3 +345,18 @@ Version information can be found in:
 - `plugin/package.json` - Plugin version
 - `docker-compose.yml` - Environment version
 - `CHANGELOG.md` - Version history 
+
+## exec	:	Execute command in container (usage: make exec s=service cmd=command)
+.PHONY: exec
+exec:
+	@if not defined s ( \
+		echo Please specify a service (s=service). Available services: wp, db, mailpit, phpmyadmin & \
+		echo Example: make exec s=wp cmd="wp plugin list" & \
+		exit /b 1 \
+	)
+	@if not defined cmd ( \
+		echo Please specify a command (cmd=command) & \
+		echo Example: make exec s=wp cmd="wp plugin list" & \
+		exit /b 1 \
+	)
+	@docker compose exec $(s) powershell -Command "$(cmd)" 

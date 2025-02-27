@@ -11,11 +11,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - VERSION file for central version tracking
 - Package.json files for theme and plugin
 - Version information in documentation
+- Make commands for executing commands in containers
+- Shell access command for containers
+- SMTP configuration documentation
+- Email testing instructions
+- Mail error logging
 
 ### Changed
 - Updated all component versions to 0.1.0
 - Synchronized version numbers in all project files
 - Added version numbers to documentation
+
+### Fixed
+- Removed .vscode directory from git tracking
+- Fixed environment variables exposure in repository
+- Fixed WordPress email sending configuration
+- Fixed database authentication in GitHub Actions
+- Fixed service health checks in CI pipeline
+- Fixed Windows compatibility for make exec and shell commands
 
 ## [0.1.0] - 2024-03-20
 ### Added
@@ -43,4 +56,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed environment variables exposure in repository
 - Fixed WordPress email sending configuration
 - Fixed database authentication in GitHub Actions
-- Fixed service health checks in CI pipeline 
+- Fixed service health checks in CI pipeline
+- Fixed SMTP configuration in Docker container
+
+## [0.1.1] - 2024-03-21
+### Added
+- SMTP configuration file for WordPress
+- Updated SMTP configuration in Docker container
+
+### Changed
+- Updated SMTP configuration in Docker container
+
+### Fixed
+- Fixed SMTP configuration in Docker container 

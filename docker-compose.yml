@@ -16,7 +16,9 @@ services:
   wp:
     container_name: ${PROJECT_NAME}_wp
     restart: 'always'
-    image: wordpress:php8.2
+    build:
+      context: ./docker/wordpress
+      dockerfile: Dockerfile
     ports:
       - 8080:80
     environment:

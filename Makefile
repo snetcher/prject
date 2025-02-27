@@ -1,6 +1,6 @@
 default: up
 
-PROJECT_NAME ?= Hertland Concept
+PROJECT_NAME ?= Prject
 
 help:
 	@echo "Available commands:"

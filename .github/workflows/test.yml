@@ -1,2 +1,41 @@
 name: Test
-on: [push, pull_request] 
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test Docker Setup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy environment file
+        run: cp .env.example .env
+
+      - name: Start containers
+        run: docker compose up -d
+
+      - name: Check running containers
+        run: docker compose ps
+
+      - name: Wait for WordPress
+        run: |
+          timeout 30s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do sleep 5; done' || false
+
+      - name: Check WordPress response
+        run: curl -I http://localhost:8080
+
+      - name: Check MariaDB connection
+        run: docker compose exec -T db mysqladmin -u root -p${DB_ROOT_PASSWORD} ping
+
+      - name: Check Mailpit
+        run: curl -I http://localhost:8025
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v 

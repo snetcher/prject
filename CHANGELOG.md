@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mailpit service for email testing
 - SMTP configuration for WordPress
 - WordPress SMTP configuration for password reset and other emails
+- GitHub Actions workflow for testing Docker setup
 
 ### Changed
 - Removed .env from git tracking
@@ -27,4 +28,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed environment variables exposure in repository
 - Fixed WordPress email sending configuration
 - Fixed WordPress white screen of death
-- Moved SMTP configuration to mu-plugins 
+- Moved SMTP configuration to mu-plugins
+- Fixed GitHub Actions configuration 

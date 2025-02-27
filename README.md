@@ -40,6 +40,7 @@ make up
 4. Access the following services:
 - WordPress: http://localhost:8080
 - phpMyAdmin: http://localhost:8081
+- Mailpit: http://localhost:8025
 
 ## Available Commands
 
@@ -86,6 +87,11 @@ The environment includes the following services:
 - **phpMyAdmin**
   - Web-based database management
   - Port: 8081
+
+- **Mailpit**
+  - Email testing interface
+  - SMTP server port: 1025
+  - Web interface port: 8025
 
 ## Troubleshooting
 

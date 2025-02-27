@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Environment variables configuration
 - Basic documentation in README.md
 - MIT License
+- Mailpit service for email testing
+- SMTP configuration for WordPress
+- WordPress SMTP configuration for password reset and other emails
 
 ### Changed
 - Removed .env from git tracking
@@ -22,11 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Removed .vscode directory from git tracking
 - Fixed environment variables exposure in repository
-
-## [0.1.0] - 2024-03-XX
-### Added
-- Initial release
-- Basic Docker Compose configuration
-- WordPress development environment
-- Database service with MariaDB
-- phpMyAdmin for database management 
+- Fixed WordPress email sending configuration
+- Fixed WordPress white screen of death
+- Moved SMTP configuration to mu-plugins 

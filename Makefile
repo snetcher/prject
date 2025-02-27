@@ -9,6 +9,7 @@ help:
 	@echo "  down      : Down containers."
 	@echo "  clean     : Remove all containers, volumes, and data."
 	@echo "  reinstall : Clean everything and start fresh installation."
+	@echo "  logs      : View WordPress logs."
 
 ## up	:	Start up containers.
 .PHONY: up
@@ -34,3 +35,7 @@ clean:
 .PHONY: reinstall
 reinstall: clean up
 	@echo "Reinstallation complete for $(PROJECT_NAME)! Open http://localhost:8080 to start fresh WordPress installation."
+
+## logs   : View WordPress logs
+logs:
+	docker compose exec wp tail -f /var/www/html/wp-content/debug.log

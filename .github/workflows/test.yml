@@ -41,7 +41,7 @@ jobs:
       - name: Check MariaDB connection
         run: |
           echo "Checking database connection..."
-          docker compose exec -T db mysqladmin -u root -p${DB_ROOT_PASSWORD} ping
+          docker compose exec -T db mysql -u root -p${DB_ROOT_PASSWORD} -e "SELECT 1;"
           echo "Database connection successful"
 
       - name: Check Mailpit

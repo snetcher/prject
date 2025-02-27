@@ -1,0 +1,60 @@
+services:
+  db:
+    container_name: ${PROJECT_NAME}_db
+    restart: 'no'
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysqldata:/var/lib/mysql
+    image: 'mariadb:latest'
+    networks:
+      - wordpress_network
+  wp:
+    container_name: ${PROJECT_NAME}_wp
+    restart: 'always'
+    image: wordpress:php8.2
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
+      WORDPRESS_DEBUG: 1
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'SCRIPT_DEBUG', true );
+    volumes:
+      - wpcontent:/var/www/html/wp-content
+      - ./theme:/var/www/html/wp-content/themes/${THEME_NAME}
+      - ./plugin:/var/www/html/wp-content/plugins/${PLUGIN_NAME}
+    networks:
+      - wordpress_network
+    depends_on:
+      - db
+  phpmyadmin:
+    container_name: ${PROJECT_NAME}_pma
+    image: phpmyadmin
+    restart: 'always'
+    ports:
+      - 8081:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+    networks:
+      - wordpress_network
+    depends_on:
+      - db
+
+networks:
+  wordpress_network:
+    name: ${PROJECT_NAME}_network
+
+volumes:
+  mysqldata:
+    name: ${PROJECT_NAME}_mysqldata
+  wpcontent:
+    name: ${PROJECT_NAME}_wpcontent

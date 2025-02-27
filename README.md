@@ -346,6 +346,29 @@ Version information can be found in:
 - `docker-compose.yml` - Environment version
 - `CHANGELOG.md` - Version history 
 
+## Plugin Management
+
+The project includes an automatic plugin manager (`/wp-content/mu-plugins/manage-plugins.php`) that performs the following actions during WordPress installation or theme activation:
+
+### Automatic Plugin Installation
+- Admin and Site Enhancements (ASE)
+- UpdraftPlus: WP Backup & Migration Plugin
+
+### Default Plugin Removal
+- Akismet Anti-spam
+- Hello Dolly
+
+### Automatic Configuration
+- Sets permalink structure to `/%postname%/` format
+- Activates all installed plugins
+
+### Features
+- Automatic execution during first installation
+- Settings verification and restoration during theme activation
+- Detailed operation logging
+- Safe removal of unnecessary plugins
+- Automatic activation after installation
+
 ## exec	:	Execute command in container (usage: make exec s=service cmd=command)
 .PHONY: exec
 exec:

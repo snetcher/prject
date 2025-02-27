@@ -17,12 +17,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SMTP configuration documentation
 - Email testing instructions
 - Mail error logging
+- Automatic installation of UpdraftPlus plugin
+- Centralized plugin management system
+- Automatic removal of default plugins (Akismet and Hello Dolly)
+- Automatic permalink structure configuration (/%postname%/)
 
 ### Changed
 - Updated WordPress container to use custom Dockerfile
 - Updated all component versions to 0.1.0
 - Synchronized version numbers in all project files
 - Added version numbers to documentation
+- Renamed and expanded functionality of `install-ase.php` to `manage-plugins.php`
+- Improved WordPress plugin management automation
 
 ### Fixed
 - Automated WP-CLI installation in WordPress container

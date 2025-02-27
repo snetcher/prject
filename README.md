@@ -57,9 +57,29 @@ make up
 - `make status` - Show status of containers
 - `make exec s=service cmd=command` - Execute command in container
 - `make shell s=service` - Access container's shell
+- `make update` - Check and update WordPress core, plugins, and themes
+- `make versions` - Display current versions of all components
+
+### Update Commands
+- `make update-check` - Check available updates for WordPress core, plugins, and themes
+- `make update-core` - Update WordPress core and database
+- `make update-plugins` - Update all WordPress plugins
+- `make update-themes` - Update all WordPress themes
 
 Examples:
 ```bash
+# Check for available updates
+make update-check
+
+# Update everything (core, plugins, themes)
+make update
+
+# Update only plugins
+make update-plugins
+
+# Check current versions
+make versions
+
 # Execute WP-CLI command
 make exec s=wp cmd='wp plugin list'
 
@@ -154,6 +174,119 @@ The environment includes the following services:
   - SMTP server port: 1025
   - Web interface port: 8025
   - Container name: ${PROJECT_NAME}_mailpit
+
+## Docker Compose Configuration
+
+The `docker-compose.yml` file defines the complete development environment. Here's a detailed breakdown of its configuration:
+
+### Network Configuration
+```yaml
+networks:
+  network:
+    name: ${PROJECT_NAME}_network
+```
+Creates an isolated network for all services to communicate securely.
+
+### Volumes Configuration
+```yaml
+volumes:
+  mysqldata:
+    name: ${PROJECT_NAME}_mysqldata
+  wpcontent:
+    name: ${PROJECT_NAME}_wpcontent
+```
+- `mysqldata`: Persistent storage for the database
+- `wpcontent`: Persistent storage for WordPress files
+
+### WordPress Service
+```yaml
+wp:
+  build:
+    context: .
+    dockerfile: Dockerfile
+  volumes:
+    - wpcontent:/var/www/html
+    - ./config/mu-plugins:/var/www/html/wp-content/mu-plugins
+    - ./theme:/var/www/html/wp-content/themes/${THEME_NAME}
+    - ./plugin:/var/www/html/wp-content/plugins/${PLUGIN_NAME}
+  environment:
+    WORDPRESS_DB_HOST: db
+    WORDPRESS_DB_NAME: ${DB_NAME}
+    WORDPRESS_DB_USER: ${DB_USER}
+    WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    WORDPRESS_TABLE_PREFIX: ${WP_TABLE_PREFIX}
+    WORDPRESS_DEBUG: 1
+```
+Key features:
+- Custom Dockerfile for WordPress with WP-CLI
+- Volume mounts for themes, plugins, and must-use plugins
+- Environment variables for database connection
+- Debug mode enabled for development
+
+### Database Service
+```yaml
+db:
+  image: mariadb
+  volumes:
+    - mysqldata:/var/lib/mysql
+  environment:
+    MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    MYSQL_DATABASE: ${DB_NAME}
+    MYSQL_USER: ${DB_USER}
+    MYSQL_PASSWORD: ${DB_PASSWORD}
+```
+Key features:
+- MariaDB with persistent storage
+- Automatic database creation
+- Secure password configuration
+- User privileges setup
+
+### phpMyAdmin Service
+```yaml
+phpmyadmin:
+  image: phpmyadmin
+  environment:
+    PMA_HOST: db
+    MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  ports:
+    - "8081:80"
+```
+Key features:
+- Automatic connection to database
+- Root password configuration
+- Web interface exposed on port 8081
+
+### Mailpit Service
+```yaml
+mailpit:
+  image: axllent/mailpit
+  ports:
+    - "1025:1025"
+    - "8025:8025"
+```
+Key features:
+- SMTP server on port 1025
+- Web interface on port 8025
+- No authentication required for development
+- Captures all outgoing emails
+
+### Health Checks
+Each service includes health checks to ensure proper operation:
+- WordPress: Checks HTTP response
+- MariaDB: Verifies database connection
+- phpMyAdmin: Validates web interface
+- Mailpit: Confirms SMTP availability
+
+### Resource Limits
+```yaml
+deploy:
+  resources:
+    limits:
+      memory: 1G
+    reservations:
+      memory: 512M
+```
+Configurable resource constraints for each service to prevent container issues.
 
 ## Troubleshooting
 

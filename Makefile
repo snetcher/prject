@@ -66,3 +66,44 @@ shell:
 		exit /b 1 \
 	)
 	@docker compose exec $(s) bash || docker compose exec $(s) sh
+
+## update	:	Check and update WordPress core, plugins, and themes
+.PHONY: update
+update: update-check update-core update-plugins update-themes
+
+## update-check	:	Check available updates for WordPress core, plugins, and themes
+.PHONY: update-check
+update-check:
+	@echo "Checking for available updates..."
+	@docker compose exec wp wp core check-update --allow-root
+	@docker compose exec wp wp plugin list --update=available --allow-root
+	@docker compose exec wp wp theme list --update=available --allow-root
+
+## update-core	:	Update WordPress core
+.PHONY: update-core
+update-core:
+	@echo "Updating WordPress core..."
+	@docker compose exec wp wp core update --allow-root
+	@docker compose exec wp wp core update-db --allow-root
+
+## update-plugins	:	Update all WordPress plugins
+.PHONY: update-plugins
+update-plugins:
+	@echo "Updating WordPress plugins..."
+	@docker compose exec wp wp plugin update --all --allow-root
+
+## update-themes	:	Update all WordPress themes
+.PHONY: update-themes
+update-themes:
+	@echo "Updating WordPress themes..."
+	@docker compose exec wp wp theme update --all --allow-root
+
+## versions	:	Display current versions of WordPress core, plugins, and themes
+.PHONY: versions
+versions:
+	@echo "WordPress Core Version:"
+	@docker compose exec wp wp core version --allow-root
+	@echo "\nInstalled Plugins:"
+	@docker compose exec wp wp plugin list --allow-root
+	@echo "\nInstalled Themes:"
+	@docker compose exec wp wp theme list --allow-root

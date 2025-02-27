@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Centralized plugin management system
 - Automatic removal of default plugins (Akismet and Hello Dolly)
 - Automatic permalink structure configuration (/%postname%/)
+- Detailed docker-compose.yml configuration documentation with examples and explanations
+- Automated update system with version checking for WordPress core, plugins, and themes
+- New make commands: update, update-check, update-core, update-plugins, update-themes, versions
 
 ### Changed
 - Updated WordPress container to use custom Dockerfile
@@ -29,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added version numbers to documentation
 - Renamed and expanded functionality of `install-ase.php` to `manage-plugins.php`
 - Improved WordPress plugin management automation
+- Enhanced README.md with comprehensive Docker Compose configuration section
+- Extended Makefile with update and version management commands
 
 ### Fixed
 - Automated WP-CLI installation in WordPress container

@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Install ASE Plugin
- * Description: Automatically installs and activates ASE plugin after WordPress installation
+ * Plugin Name: WordPress Plugins Manager
+ * Description: Automatically manages WordPress plugins: removes default plugins, installs and activates required plugins, and configures permalink structure
  * Version: 0.1.0
  */
 
@@ -65,38 +65,45 @@ function manage_default_plugins() {
     $flush_output = shell_exec($flush_command);
     error_log("Rewrite flush output: " . $flush_output);
 
-    // Install and activate ASE plugin
-    $plugin_slug = 'admin-site-enhancements';
-    
-    // Check if ASE is already installed
-    $check_command = "wp plugin is-installed {$plugin_slug} --allow-root 2>&1";
-    $is_installed = shell_exec($check_command);
-    
-    if (strpos($is_installed, 'Success') === false) {
-        error_log("Installing ASE plugin...");
+    // List of plugins to install
+    $plugins_to_install = array(
+        'admin-site-enhancements' => 'Admin and Site Enhancements (ASE)',
+        'updraftplus' => 'UpdraftPlus'
+    );
+
+    foreach ($plugins_to_install as $plugin_slug => $plugin_name) {
+        error_log("Processing {$plugin_name} installation...");
         
-        // Install and activate in one command
-        $install_command = "wp plugin install {$plugin_slug} --activate --allow-root 2>&1";
-        $install_output = shell_exec($install_command);
-        error_log("Install output: " . $install_output);
+        // Check if plugin is already installed
+        $check_command = "wp plugin is-installed {$plugin_slug} --allow-root 2>&1";
+        $is_installed = shell_exec($check_command);
         
-        // Double check activation
-        $check_active_command = "wp plugin is-active {$plugin_slug} --allow-root 2>&1";
-        $is_active = shell_exec($check_active_command);
-        
-        if (strpos($is_active, 'Success') === false) {
-            error_log("Forcing activation of ASE plugin...");
+        if (strpos($is_installed, 'Success') === false) {
+            error_log("Installing {$plugin_name}...");
+            
+            // Install and activate in one command
+            $install_command = "wp plugin install {$plugin_slug} --activate --allow-root 2>&1";
+            $install_output = shell_exec($install_command);
+            error_log("Install output for {$plugin_name}: " . $install_output);
+            
+            // Double check activation
+            $check_active_command = "wp plugin is-active {$plugin_slug} --allow-root 2>&1";
+            $is_active = shell_exec($check_active_command);
+            
+            if (strpos($is_active, 'Success') === false) {
+                error_log("Forcing activation of {$plugin_name}...");
+                $activate_command = "wp plugin activate {$plugin_slug} --allow-root 2>&1";
+                $activate_output = shell_exec($activate_command);
+                error_log("Activation output for {$plugin_name}: " . $activate_output);
+            }
+        } else {
+            error_log("{$plugin_name} is already installed");
+            
+            // Make sure it's activated
             $activate_command = "wp plugin activate {$plugin_slug} --allow-root 2>&1";
             $activate_output = shell_exec($activate_command);
-            error_log("Activation output: " . $activate_output);
+            error_log("Activate output for {$plugin_name}: " . $activate_output);
         }
-    } else {
-        error_log("ASE plugin is already installed");
-        
-        // Make sure it's activated
-        $activate_command = "wp plugin activate {$plugin_slug} --allow-root 2>&1";
-        $activate_output = shell_exec($activate_command);
-        error_log("Activate output: " . $activate_output);
     }
 }
 

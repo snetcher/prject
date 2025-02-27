@@ -12,6 +12,11 @@ if (!defined('ABSPATH')) {
 
 // Plugin management function
 function manage_default_plugins() {
+    // Check if we've already run this function
+    if (get_option('wp_plugins_manager_initialized')) {
+        return;
+    }
+
     // Force remove unwanted plugins
     $plugins_to_remove = array(
         'akismet' => array(
@@ -105,6 +110,9 @@ function manage_default_plugins() {
             error_log("Activate output for {$plugin_name}: " . $activate_output);
         }
     }
+
+    // Mark as initialized
+    update_option('wp_plugins_manager_initialized', true);
 }
 
 // Helper function to recursively remove directories
@@ -127,10 +135,13 @@ function recursive_rmdir($dir) {
     return false;
 }
 
-// Add action after theme activation (usually happens during first installation)
+// Add action after theme activation
 add_action('after_switch_theme', 'manage_default_plugins');
 
-// Also add action on plugin activation (our mu-plugin)
-if (is_admin()) {
-    add_action('init', 'manage_default_plugins');
+// Add action on plugin activation, but only if not initialized
+function maybe_initialize_plugins() {
+    if (!get_option('wp_plugins_manager_initialized') && is_admin()) {
+        manage_default_plugins();
+    }
 }
+add_action('init', 'maybe_initialize_plugins', 1);

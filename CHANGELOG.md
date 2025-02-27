@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Version synchronization across all project files
+- VERSION file for central version tracking
+- Package.json files for theme and plugin
+- Version information in documentation
+
+### Changed
+- Updated all component versions to 0.1.0
+- Synchronized version numbers in all project files
+- Added version numbers to documentation
+
+## [0.1.0] - 2024-03-20
+### Added
 - Initial Docker environment setup with WordPress, MariaDB, and phpMyAdmin
 - Makefile with basic commands (up, down, clean, reinstall)
 - Theme and plugin development directories
@@ -31,12 +43,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed environment variables exposure in repository
 - Fixed WordPress email sending configuration
 - Fixed database authentication in GitHub Actions
-- Fixed service health checks in CI pipeline
-
-## [0.1.0] - 2024-03-20
-### Added
-- Initial release
-- Basic Docker Compose configuration
-- WordPress development environment
-- Database service with MariaDB
-- phpMyAdmin for database management 
+- Fixed service health checks in CI pipeline 

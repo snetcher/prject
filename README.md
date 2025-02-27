@@ -1,4 +1,4 @@
-# WordPress Development Environment
+# WordPress Development Environment (v0.1.0)
 
 This repository contains a Docker-based development environment for WordPress themes and plugins development.
 
@@ -273,4 +273,36 @@ make reinstall
 curl http://localhost:8080  # Should return 200 or 302
 curl http://localhost:8025  # Should return 200
 docker compose exec db mariadb -uroot -p${DB_ROOT_PASSWORD} -e "SELECT 1;"
-``` 
+```
+
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/).
+
+Current version: **0.1.0**
+
+Version numbers are synchronized across all components:
+- Docker environment
+- WordPress theme
+- WordPress plugin
+- Documentation
+- Configuration files
+
+### Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
+### Version Components
+
+- Major version: Breaking changes
+- Minor version: New features, backwards compatible
+- Patch version: Bug fixes, backwards compatible
+
+### Version Files
+
+Version information can be found in:
+- `/VERSION` - Central version file
+- `theme/package.json` - Theme version
+- `plugin/package.json` - Plugin version
+- `docker-compose.yml` - Environment version
+- `CHANGELOG.md` - Version history 

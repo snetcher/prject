@@ -22,7 +22,7 @@ jobs:
       - name: Wait for WordPress
         run: |
           echo "Waiting for WordPress to be ready..."
-          timeout 120s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" ]]; do 
+          timeout 120s bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "200" && "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)" != "302" ]]; do 
             echo "Waiting... Current status: $(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080)"
             docker compose ps
             docker compose logs wp --tail 20
@@ -30,7 +30,13 @@ jobs:
           done' || false
 
       - name: Check WordPress response
-        run: curl -I http://localhost:8080
+        run: |
+          STATUS=$(curl -s -o /dev/null -w '%{http_code}' localhost:8080)
+          echo "WordPress status code: $STATUS"
+          if [[ "$STATUS" != "200" && "$STATUS" != "302" ]]; then
+            echo "Unexpected status code"
+            exit 1
+          fi
 
       - name: Check MariaDB connection
         run: |

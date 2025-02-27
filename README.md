@@ -137,4 +137,50 @@ SOFTWARE.
 
 ## Contributing
 
-[Your Contributing Guidelines Here] 
+### How to Contribute
+
+1. Fork the repository
+2. Create your feature branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m 'Add some feature'
+   ```
+4. Push to the branch:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+5. Open a Pull Request
+
+### Development Guidelines
+
+1. Docker Environment
+   - Don't commit .env file
+   - Test your changes with `make reinstall`
+   - Keep docker-compose.yml clean and documented
+
+2. WordPress Development
+   - Follow WordPress Coding Standards
+   - Test with debug mode enabled
+   - Keep theme and plugin directories organized
+
+3. Documentation
+   - Update README.md if adding new make commands
+   - Document new environment variables
+   - Keep configuration examples up to date
+
+### Reporting Issues
+
+When reporting issues, please include:
+
+1. Environment Details:
+   - Docker version
+   - Operating System
+   - Error messages (if any)
+
+2. Problem Description:
+   - What happened?
+   - What was expected?
+   - Steps to reproduce 

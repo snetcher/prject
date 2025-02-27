@@ -370,6 +370,7 @@ The project includes an automatic plugin manager (`/wp-content/mu-plugins/manage
 - Automatic activation after installation
 
 ## exec	:	Execute command in container (usage: make exec s=service cmd=command)
+```bash
 .PHONY: exec
 exec:
 	@if not defined s ( \
@@ -383,3 +384,4 @@ exec:
 		exit /b 1 \
 	)
 	@docker compose exec $(s) powershell -Command "$(cmd)" 
+```

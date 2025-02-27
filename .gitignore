@@ -1,5 +1,7 @@
 # Environment files
 .env
+.env.*
+!.env.example
 
 # WordPress content
 wp-content/
@@ -27,4 +29,13 @@ vendor/
 
 # Build files
 dist/
-build/ 
+build/
+
+# New rules
+*.bak
+*.swp
+*.zip
+*.tar.gz
+.php_cs.cache
+.phpunit.result.cache
+wp-cli.local.yml 

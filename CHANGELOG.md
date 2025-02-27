@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Custom WordPress Dockerfile with pre-installed WP-CLI
 - Version synchronization across all project files
 - VERSION file for central version tracking
 - Package.json files for theme and plugin
@@ -18,11 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mail error logging
 
 ### Changed
+- Updated WordPress container to use custom Dockerfile
 - Updated all component versions to 0.1.0
 - Synchronized version numbers in all project files
 - Added version numbers to documentation
 
 ### Fixed
+- Automated WP-CLI installation in WordPress container
 - Removed .vscode directory from git tracking
 - Fixed environment variables exposure in repository
 - Fixed WordPress email sending configuration

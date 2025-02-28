@@ -9,6 +9,9 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+    
+
+    <div class="entry-content">
     <header class="entry-header">
         <?php
         if (is_singular()) :
@@ -39,33 +42,39 @@
     </header>
 
     <?php wp_start_theme_post_thumbnail(); ?>
-
-    <div class="entry-content">
         <?php
         if (is_singular()) :
             the_content();
         else :
             the_excerpt();
-            ?>
+            ?><?php if ('post' === get_post_type()) : ?>
+                <footer class="entry-footer">
+                    <div class="post-meta">
+                        <!-- Debug Info -->
+                        <pre style="display: none;">
+                            Author: <?php var_dump(get_the_author()); ?>
+                            Categories: <?php var_dump(get_the_category()); ?>
+                            Tags: <?php var_dump(get_the_tags()); ?>
+                        </pre>
+                        <span class="author">
+                            <?php echo get_avatar(get_the_author_meta('ID'), 32); ?>
+                            <?php echo esc_html__('By', 'wp-start-theme') . ' ' . get_the_author(); ?>
+                        </span>
+                        <span class="categories">
+                            <?php the_category(', '); ?>
+                        </span>
+                        <span class="tags">
+                            <?php the_tags('', ', '); ?>
+                        </span>
+                    </div>
+                </footer>
+            <?php endif; ?>
             <a href="<?php echo esc_url(get_permalink()); ?>" class="read-more">
                 <?php esc_html_e('Read More', 'wp-start-theme'); ?>
             </a>
         <?php
         endif;
         ?>
+        
     </div>
-
-    <footer class="entry-footer">
-        <?php
-        $categories_list = get_the_category_list(esc_html__(', ', 'wp-start-theme'));
-        if ($categories_list) {
-            printf('<span class="cat-links">%s</span>', $categories_list);
-        }
-
-        $tags_list = get_the_tag_list('', esc_html_x(', ', 'list item separator', 'wp-start-theme'));
-        if ($tags_list) {
-            printf('<span class="tags-links">%s</span>', $tags_list);
-        }
-        ?>
-    </footer>
-</article> 
+</article>

@@ -85,7 +85,7 @@ body {
 }
 
 .site {
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.6;
     font-family: 'Rajdhani', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
     color: var(--text-color);
@@ -498,7 +498,6 @@ body {
     margin-top: 2rem;
     padding: 1.5rem;
     background: var(--background-light);
-    border-top: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .post-meta span {
@@ -796,7 +795,7 @@ body {
 .entry-footer {
     margin-top: 2rem;
     padding: 1.5rem;
-    border-top: 1px solid rgba(0, 255, 255, 0.1);
+    padding: 0 0 1.5rem;
 }
 
 .entry-footer > span {
@@ -1143,10 +1142,26 @@ body {
     transition: transform 0.3s ease;
 }
 
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.4);
+    }
+    70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(0, 255, 255, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(0, 255, 255, 0);
+    }
+}
+
 .back-to-top:hover {
-    background: var(--primary-color);
-    color: var(--background-dark);
     transform: translateY(-2px) scale(1.1);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+    color: var(--background-color);
+    animation: pulse 1.5s infinite;
 }
 
 .back-to-top:hover::before {

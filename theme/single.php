@@ -18,18 +18,26 @@ get_header();
                     <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
                         <div class="entry-content">
                             <?php the_content(); ?>
-                        </div>
-
-                        <footer class="entry-footer">
-                            <?php
-                            $tags_list = get_the_tag_list('', ', ');
-                            if ($tags_list) :
-                            ?>
-                                <span class="tags-links">
-                                    <?php echo $tags_list; ?>
+                            <footer class="entry-footer">
+                            <div class="post-meta">
+                                <span class="author">
+                                    <?php echo get_avatar(get_the_author_meta('ID'), 32); ?>
+                                    <?php echo esc_html__('By', 'wp-start-theme') . ' ' . get_the_author(); ?>
                                 </span>
-                            <?php endif; ?>
+                                <span class="categories">
+                                    <?php the_category(', '); ?>
+                                </span>
+                                <?php
+                                $tags_list = get_the_tag_list('', ', ');
+                                if ($tags_list) :
+                                ?>
+                                    <span class="tags-links">
+                                        <?php echo $tags_list; ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
                         </footer>
+                        </div>
                     </article>
 
                     <?php

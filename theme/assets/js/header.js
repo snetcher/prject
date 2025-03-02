@@ -1,29 +1,33 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let lastScrollTop = 0;
     const header = document.querySelector('.site-header');
-    const scrollThreshold = 100; // Минимальное расстояние прокрутки для срабатывания
-
+    const scrollThreshold = 100; // Minimum scroll distance to trigger
+    let lastScrollTop = 0;
+    
+    // Initial state
+    header.classList.add('visible');
+    
+    // Show header at the very top of the page
+    if (window.scrollY === 0) {
+        header.classList.add('visible');
+    }
+    
     window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Показываем шапку в самом верху страницы
-        if (currentScroll <= 0) {
-            header.classList.remove('is-hidden');
-            return;
-        }
-        
-        // Если прокрутили больше порога
-        if (Math.abs(lastScrollTop - currentScroll) <= scrollThreshold) return;
-
-        // Скрываем при прокрутке вниз, показываем при прокрутке вверх
-        if (currentScroll > lastScrollTop) {
-            // Прокрутка вниз
-            header.classList.add('is-hidden');
+        // If scrolled more than threshold
+        if (window.scrollY > scrollThreshold) {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            
+            if (currentScroll > lastScrollTop) {
+                // Scrolling down
+                header.classList.remove('visible');
+            } else {
+                // Scrolling up
+                header.classList.add('visible');
+            }
+            
+            lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
         } else {
-            // Прокрутка вверх
-            header.classList.remove('is-hidden');
+            // At the top
+            header.classList.add('visible');
         }
-
-        lastScrollTop = currentScroll;
     }, { passive: true });
 }); 

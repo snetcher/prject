@@ -32,7 +32,7 @@
                 if (is_archive()) {
                     the_archive_title();
                 } elseif (is_search()) {
-                    printf(esc_html__('Поиск: %s', 'wp-start-theme'), '<span>' . get_search_query() . '</span>');
+                    printf(esc_html__('Search: %s', 'wp-start-theme'), '<span>' . get_search_query() . '</span>');
                 } else {
                     the_title();
                 }

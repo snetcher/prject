@@ -41,13 +41,15 @@ get_header();
                     </article>
 
                     <?php
-                    // Навигация между постами
-                    the_post_navigation(array(
-                        'prev_text' => '← %title',
-                        'next_text' => '%title →',
-                    ));
+                    // Post navigation
+                    the_post_navigation(
+                        array(
+                            'prev_text' => '<span class="nav-subtitle">' . esc_html__('Previous:', 'wp-start-theme') . '</span> <span class="nav-title">%title</span>',
+                            'next_text' => '<span class="nav-subtitle">' . esc_html__('Next:', 'wp-start-theme') . '</span> <span class="nav-title">%title</span>',
+                        )
+                    );
 
-                    // Если комментарии открыты или есть хотя бы один комментарий, загружаем шаблон комментариев
+                    // If comments are open or we have at least one comment, load up the comment template
                     if (comments_open() || get_comments_number()) :
                         comments_template();
                     endif;

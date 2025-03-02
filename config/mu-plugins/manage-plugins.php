@@ -1,147 +1,172 @@
 <?php
 /**
- * Plugin Name: WordPress Plugins Manager
- * Description: Automatically manages WordPress plugins: removes default plugins, installs and activates required plugins, and configures permalink structure
- * Version: 0.1.0
+ * Plugin Name: Auto Install Required Plugins
+ * Description: Automatically installs and activates required plugins
+ * Version: 1.0
+ * Author: Your Name
  */
 
 // Prevent direct access
-if (!defined('ABSPATH')) {
-    exit;
+if (!defined('ABSPATH')) exit;
+
+// Include WordPress plugin functions
+require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+require_once(ABSPATH . 'wp-admin/includes/file.php');
+require_once(ABSPATH . 'wp-admin/includes/misc.php');
+require_once(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php');
+require_once(ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php');
+require_once(ABSPATH . 'wp-admin/includes/plugin-install.php');
+
+/**
+ * Remove unwanted plugins
+ */
+function remove_unwanted_plugins() {
+    // Only run on admin pages
+    if (!is_admin()) return;
+
+    // List of plugins to remove
+    $plugins_to_remove = array(
+        'hello.php' => 'Hello Dolly',
+        'akismet/akismet.php' => 'Akismet'
+    );
+
+    foreach ($plugins_to_remove as $plugin_file => $plugin_name) {
+        if (file_exists(WP_PLUGIN_DIR . '/' . $plugin_file)) {
+            // Deactivate if active
+            if (is_plugin_active($plugin_file)) {
+                deactivate_plugins($plugin_file);
+                error_log("Deactivated {$plugin_name}");
+            }
+
+            // Delete plugin files
+            $deleted = delete_plugins(array($plugin_file));
+            if ($deleted) {
+                error_log("Successfully removed {$plugin_name}");
+            } else {
+                error_log("Failed to remove {$plugin_name}");
+            }
+        }
+    }
 }
 
-// Plugin management function
-function manage_default_plugins() {
-    // Check if we've already run this function
-    if (get_option('wp_plugins_manager_initialized')) {
-        return;
-    }
+/**
+ * Install and activate required plugins
+ */
+function install_and_activate_plugins() {
+    // Only run on admin pages
+    if (!is_admin()) return;
 
-    // Force remove unwanted plugins
-    $plugins_to_remove = array(
-        'akismet' => array(
-            'file' => 'akismet/akismet.php',
-            'directory' => WP_PLUGIN_DIR . '/akismet'
+    // First remove unwanted plugins
+    remove_unwanted_plugins();
+
+    // List of required plugins with their download URLs
+    $plugins = array(
+        'admin-site-enhancements' => array(
+            'name' => 'Admin and Site Enhancements (ASE)',
+            'url' => 'https://downloads.wordpress.org/plugin/admin-site-enhancements.latest-stable.zip',
+            'file' => 'admin-site-enhancements/admin-site-enhancements.php'
         ),
-        'hello' => array(
-            'file' => 'hello.php',
-            'directory' => WP_PLUGIN_DIR . '/hello.php'
+        'updraftplus' => array(
+            'name' => 'UpdraftPlus',
+            'url' => 'https://downloads.wordpress.org/plugin/updraftplus.latest-stable.zip',
+            'file' => 'updraftplus/updraftplus.php'
+        ),
+        'advanced-custom-fields' => array(
+            'name' => 'Advanced Custom Fields',
+            'url' => 'https://downloads.wordpress.org/plugin/advanced-custom-fields.latest-stable.zip',
+            'file' => 'advanced-custom-fields/acf.php'
         )
     );
 
-    foreach ($plugins_to_remove as $plugin_name => $plugin_info) {
-        error_log("Processing plugin: {$plugin_name}");
-        
-        // First try WP-CLI deactivation
-        $deactivate_command = "wp plugin deactivate {$plugin_name} --allow-root 2>&1";
-        shell_exec($deactivate_command);
-        
-        // Then try WordPress function
-        if (function_exists('deactivate_plugins')) {
-            deactivate_plugins($plugin_info['file']);
-        }
-        
-        // Remove files directly
-        if (file_exists($plugin_info['directory'])) {
-            error_log("Removing {$plugin_info['directory']}");
-            if (is_dir($plugin_info['directory'])) {
-                recursive_rmdir($plugin_info['directory']);
-            } else {
-                unlink($plugin_info['directory']);
-            }
-        }
-        
-        // Verify removal
-        if (!file_exists($plugin_info['directory'])) {
-            error_log("Successfully removed {$plugin_name}");
-        } else {
-            error_log("Failed to remove {$plugin_name}");
-        }
-    }
-
-    // Set permalink structure
-    error_log("Setting permalink structure...");
-    $permalink_command = "wp rewrite structure '/%postname%/' --allow-root 2>&1";
-    $permalink_output = shell_exec($permalink_command);
-    error_log("Permalink output: " . $permalink_output);
-
-    // Flush rewrite rules
-    $flush_command = "wp rewrite flush --allow-root 2>&1";
-    $flush_output = shell_exec($flush_command);
-    error_log("Rewrite flush output: " . $flush_output);
-
-    // List of plugins to install
-    $plugins_to_install = array(
-        'admin-site-enhancements' => 'Admin and Site Enhancements (ASE)',
-        'updraftplus' => 'UpdraftPlus'
-    );
-
-    foreach ($plugins_to_install as $plugin_slug => $plugin_name) {
-        error_log("Processing {$plugin_name} installation...");
-        
-        // Check if plugin is already installed
-        $check_command = "wp plugin is-installed {$plugin_slug} --allow-root 2>&1";
-        $is_installed = shell_exec($check_command);
-        
-        if (strpos($is_installed, 'Success') === false) {
-            error_log("Installing {$plugin_name}...");
+    foreach ($plugins as $slug => $plugin) {
+        // Check if plugin is already installed and activated
+        if (!is_plugin_active($plugin['file'])) {
+            // Check if plugin directory exists
+            $plugin_dir = WP_PLUGIN_DIR . '/' . dirname($plugin['file']);
             
-            // Install and activate in one command
-            $install_command = "wp plugin install {$plugin_slug} --activate --allow-root 2>&1";
-            $install_output = shell_exec($install_command);
-            error_log("Install output for {$plugin_name}: " . $install_output);
-            
-            // Double check activation
-            $check_active_command = "wp plugin is-active {$plugin_slug} --allow-root 2>&1";
-            $is_active = shell_exec($check_active_command);
-            
-            if (strpos($is_active, 'Success') === false) {
-                error_log("Forcing activation of {$plugin_name}...");
-                $activate_command = "wp plugin activate {$plugin_slug} --allow-root 2>&1";
-                $activate_output = shell_exec($activate_command);
-                error_log("Activation output for {$plugin_name}: " . $activate_output);
-            }
-        } else {
-            error_log("{$plugin_name} is already installed");
-            
-            // Make sure it's activated
-            $activate_command = "wp plugin activate {$plugin_slug} --allow-root 2>&1";
-            $activate_output = shell_exec($activate_command);
-            error_log("Activate output for {$plugin_name}: " . $activate_output);
-        }
-    }
+            if (!file_exists($plugin_dir)) {
+                // Install the plugin
+                $upgrader = new Plugin_Upgrader(new Automatic_Upgrader_Skin());
+                $installed = $upgrader->install($plugin['url']);
 
-    // Mark as initialized
-    update_option('wp_plugins_manager_initialized', true);
-}
-
-// Helper function to recursively remove directories
-function recursive_rmdir($dir) {
-    if (is_dir($dir)) {
-        $objects = scandir($dir);
-        foreach ($objects as $object) {
-            if ($object != "." && $object != "..") {
-                $full_path = $dir . "/" . $object;
-                if (is_dir($full_path)) {
-                    recursive_rmdir($full_path);
+                if (!is_wp_error($installed) && $installed) {
+                    error_log("Successfully installed {$plugin['name']}");
+                    // Activate the plugin
+                    $activated = activate_plugin($plugin['file']);
+                    if (is_wp_error($activated)) {
+                        error_log("Failed to activate {$plugin['name']}: " . $activated->get_error_message());
+                    } else {
+                        error_log("Successfully activated {$plugin['name']}");
+                    }
                 } else {
-                    unlink($full_path);
+                    error_log("Failed to install {$plugin['name']}");
+                }
+            } else {
+                // Plugin exists but not activated
+                $activated = activate_plugin($plugin['file']);
+                if (is_wp_error($activated)) {
+                    error_log("Failed to activate {$plugin['name']}: " . $activated->get_error_message());
+                } else {
+                    error_log("Successfully activated {$plugin['name']}");
                 }
             }
         }
-        rmdir($dir);
-        return true;
-    }
-    return false;
-}
-
-// Add action after theme activation
-add_action('after_switch_theme', 'manage_default_plugins');
-
-// Add action on plugin activation, but only if not initialized
-function maybe_initialize_plugins() {
-    if (!get_option('wp_plugins_manager_initialized') && is_admin()) {
-        manage_default_plugins();
     }
 }
-add_action('init', 'maybe_initialize_plugins', 1);
+
+// Run on admin init with lower priority to ensure all required functions are loaded
+add_action('admin_init', 'install_and_activate_plugins', 20);
+
+/**
+ * Check plugin status and display admin notice
+ */
+function check_plugins_status() {
+    // Only run on admin pages
+    if (!is_admin()) return;
+
+    $messages = array();
+
+    // Check for plugins to remove
+    $plugins_to_remove = array(
+        'hello.php' => 'Hello Dolly',
+        'akismet/akismet.php' => 'Akismet'
+    );
+
+    foreach ($plugins_to_remove as $plugin_file => $plugin_name) {
+        if (file_exists(WP_PLUGIN_DIR . '/' . $plugin_file)) {
+            $messages[] = "Removing {$plugin_name}...";
+        }
+    }
+
+    // Check for plugins to install
+    $required_plugins = array(
+        'admin-site-enhancements/admin-site-enhancements.php' => 'Admin and Site Enhancements (ASE)',
+        'updraftplus/updraftplus.php' => 'UpdraftPlus',
+        'advanced-custom-fields/acf.php' => 'Advanced Custom Fields'
+    );
+
+    foreach ($required_plugins as $plugin_path => $plugin_name) {
+        if (!is_plugin_active($plugin_path)) {
+            $messages[] = "Installing and activating {$plugin_name}...";
+        }
+    }
+
+    if (!empty($messages)) {
+        add_action('admin_notices', function() use ($messages) {
+            ?>
+            <div class="notice notice-info">
+                <p><strong>Plugin Management:</strong></p>
+                <ul>
+                    <?php foreach ($messages as $message): ?>
+                        <li><?php echo $message; ?></li>
+                    <?php endforeach; ?>
+                </ul>
+                <p>Please wait while the changes are being applied...</p>
+            </div>
+            <?php
+        });
+    }
+}
+
+// Check plugins status
+add_action('admin_init', 'check_plugins_status', 10);

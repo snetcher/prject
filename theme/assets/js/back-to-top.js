@@ -1,30 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Создаем кнопку
+    // Create button
     const backToTop = document.createElement('button');
-    backToTop.className = 'back-to-top';
-    backToTop.setAttribute('aria-label', 'Прокрутить вверх');
+    backToTop.classList.add('back-to-top');
+    backToTop.setAttribute('aria-label', 'Scroll to top');
     document.body.appendChild(backToTop);
 
-    // Функция прокрутки вверх
-    const scrollToTop = () => {
+    // Scroll to top function
+    function scrollToTop() {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
-    };
+    }
 
-    // Обработчик клика
+    // Click handler
     backToTop.addEventListener('click', scrollToTop);
 
-    // Показываем/скрываем кнопку при прокрутке
-    const toggleBackToTop = () => {
+    // Show/hide button on scroll
+    window.addEventListener('scroll', function() {
         if (window.pageYOffset > 300) {
             backToTop.classList.add('show');
         } else {
             backToTop.classList.remove('show');
         }
-    };
-
-    // Слушаем событие прокрутки
-    window.addEventListener('scroll', toggleBackToTop, { passive: true });
+    });
 }); 

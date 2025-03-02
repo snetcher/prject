@@ -1,0 +1,106 @@
+/**
+ * ACF Custom Repeater Field CSS
+ */
+
+.acf-field-custom-repeater .acf-repeater {
+    margin: 0;
+    padding: 0;
+}
+
+.acf-field-custom-repeater .acf-table {
+    border: #ccd0d4 solid 1px;
+    background: #fff;
+    margin: 0 0 1em;
+    border-spacing: 0;
+    border-radius: 0;
+    border-collapse: separate;
+    width: 100%;
+}
+
+.acf-field-custom-repeater .acf-table > thead > tr > th {
+    background: #f9f9f9;
+    border-bottom: #ccd0d4 solid 1px;
+    padding: 8px;
+    font-size: 14px;
+    line-height: 1.4;
+    font-weight: normal;
+    text-align: left;
+    color: #23282d;
+}
+
+.acf-field-custom-repeater .acf-table > tbody > tr {
+    background: #fff;
+}
+
+.acf-field-custom-repeater .acf-table > tbody > tr > td {
+    padding: 8px;
+    border-top: #eee solid 1px;
+    border-left: #eee solid 1px;
+}
+
+.acf-field-custom-repeater .acf-table > tbody > tr > td:first-child {
+    border-left: none;
+}
+
+.acf-field-custom-repeater .acf-table > tbody > tr:first-child > td {
+    border-top: none;
+}
+
+.acf-field-custom-repeater .acf-row-handle {
+    width: 16px;
+    text-align: center !important;
+    vertical-align: middle !important;
+    position: relative;
+}
+
+.acf-field-custom-repeater .acf-row-handle .acf-icon {
+    display: block;
+    height: 16px;
+    width: 16px;
+    border: #ccc solid 1px;
+    border-radius: 50%;
+    position: relative;
+    background: #fff;
+    margin: 0 auto;
+}
+
+.acf-field-custom-repeater .acf-row-handle .acf-icon.-minus:hover {
+    background: #f55e4f;
+    border-color: #f1160a;
+    color: #fff;
+}
+
+.acf-field-custom-repeater .acf-actions {
+    text-align: right;
+    padding: 10px;
+}
+
+.acf-field-custom-repeater .acf-actions .button {
+    margin-left: 4px;
+}
+
+.acf-field-custom-repeater .acf-table .acf-row.acf-clone {
+    display: none;
+}
+
+.acf-field-custom-repeater .acf-repeater.-empty > table {
+    border: none;
+}
+
+.acf-field-custom-repeater .acf-repeater.-empty > table > tbody > tr > td {
+    background: transparent;
+}
+
+/* Sortable */
+.acf-field-custom-repeater .acf-repeater .ui-sortable-helper {
+    box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+}
+
+.acf-field-custom-repeater .acf-repeater .ui-sortable-placeholder {
+    visibility: visible !important;
+    background: #F9F9F9;
+}
+
+.acf-field-custom-repeater .acf-repeater .ui-sortable-placeholder td {
+    border: none;
+}

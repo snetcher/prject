@@ -68,41 +68,60 @@
     </header>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const menuToggle = document.querySelector('.menu-toggle');
-        const navigation = document.querySelector('.main-navigation');
-        
-        // Функция закрытия меню
+        // Menu close function
         function closeMenu() {
-            navigation.classList.remove('is-active');
-            menuToggle.setAttribute('aria-expanded', 'false');
+            const menuButton = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('.main-navigation');
+            menuButton.setAttribute('aria-expanded', 'false');
+            mainNav.classList.remove('is-active');
         }
-        
-        // Обработчик клика по кнопке меню
-        menuToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
-            
-            if (isExpanded) {
-                closeMenu();
-            } else {
-                navigation.classList.add('is-active');
-                menuToggle.setAttribute('aria-expanded', 'true');
-            }
+
+        // Menu button click handler
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            const mainNav = document.querySelector('.main-navigation');
+            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+            this.setAttribute('aria-expanded', !isExpanded);
+            mainNav.classList.toggle('is-active');
         });
-        
-        // Закрытие меню при клике вне его
+
+        // Close menu when clicking outside
         document.addEventListener('click', function(e) {
-            if (!navigation.contains(e.target)) {
+            const menuButton = document.querySelector('.menu-toggle');
+            const mainNav = document.querySelector('.main-navigation');
+            const isMenuOpen = mainNav.classList.contains('is-active');
+            
+            if (isMenuOpen && !mainNav.contains(e.target) && !menuButton.contains(e.target)) {
                 closeMenu();
             }
         });
-        
-        // Предотвращаем закрытие при клике по меню
-        navigation.addEventListener('click', function(e) {
+
+        // Prevent closing when clicking inside menu
+        document.querySelector('.main-navigation').addEventListener('click', function(e) {
             e.stopPropagation();
         });
-    });
+
+        // Header hide/show on scroll
+        let lastScroll = 0;
+        const header = document.querySelector('.site-header');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll <= 0) {
+                header.classList.remove('is-hidden');
+                return;
+            }
+            
+            if (currentScroll > lastScroll && !header.classList.contains('is-hidden')) {
+                // Scrolling down
+                header.classList.add('is-hidden');
+            } else if (currentScroll < lastScroll && header.classList.contains('is-hidden')) {
+                // Scrolling up
+                header.classList.remove('is-hidden');
+            }
+            
+            lastScroll = currentScroll;
+        });
     </script>
 
 <?php wp_footer(); ?>

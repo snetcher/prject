@@ -1,4 +1,4 @@
-# WordPress Development Environment (v0.1.0)
+# WordPress Development Environment (v0.2.0)
 
 This repository contains a Docker-based development environment for WordPress themes and plugins development.
 
@@ -7,20 +7,6 @@ This repository contains a Docker-based development environment for WordPress th
 - Docker
 - Docker Compose
 - Make
-
-## Project Structure
-
-```
-.
-├── .env                # Environment variables
-├── .env.example       # Example environment file
-├── docker-compose.yml # Docker services configuration
-├── Makefile          # Development commands
-├── config/           # Configuration files
-│   └── mu-plugins/   # Must-use plugins
-├── plugin/           # Plugin development directory
-└── theme/           # Theme development directory
-```
 
 ## Quick Start
 
@@ -45,6 +31,20 @@ make up
 - WordPress: http://localhost:8080
 - phpMyAdmin: http://localhost:8081
 - Mailpit: http://localhost:8025
+
+## Project Structure
+
+```
+.
+├── .env                # Environment variables
+├── .env.example       # Example environment file
+├── docker-compose.yml # Docker services configuration
+├── Makefile          # Development commands
+├── config/           # Configuration files
+│   └── mu-plugins/   # Must-use plugins
+├── plugin/           # Plugin development directory
+└── theme/           # Theme development directory
+```
 
 ## Available Commands
 
@@ -288,6 +288,61 @@ deploy:
 ```
 Configurable resource constraints for each service to prevent container issues.
 
+## Plugin Management
+
+The project includes an automatic plugin manager (`/wp-content/mu-plugins/manage-plugins.php`) that performs the following actions during WordPress installation or theme activation:
+
+### Automatic Plugin Installation
+- Admin and Site Enhancements (ASE)
+- UpdraftPlus: WP Backup & Migration Plugin
+
+### Default Plugin Removal
+- Akismet Anti-spam
+- Hello Dolly
+
+### Automatic Configuration
+- Sets permalink structure to `/%postname%/` format
+- Activates all installed plugins
+
+### Features
+- Automatic execution during first installation
+- Settings verification and restoration during theme activation
+- Detailed operation logging
+- Safe removal of unnecessary plugins
+- Automatic activation after installation
+
+## Versioning
+
+This project follows [Semantic Versioning](https://semver.org/).
+
+Current version: **0.2.0**
+
+Version numbers are synchronized across all components:
+- Docker environment
+- WordPress theme
+- WordPress plugin
+- Documentation
+- Configuration files
+
+### Version History
+
+See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
+
+### Version Components
+
+- Major version: Breaking changes
+- Minor version: New features, backwards compatible
+- Patch version: Bug fixes, backwards compatible
+
+### Version Files
+
+Version information can be found in:
+- `/VERSION` - Central version file
+- `theme/package.json` - Theme version
+- `plugin/package.json` - Plugin version
+- `docker-compose.yml` - Environment version
+- `CHANGELOG.md` - Version history
+
 ## Troubleshooting
 
 1. If you need to start fresh:
@@ -322,30 +377,6 @@ make status
 - Consider changing the default table prefix for better security
 - Restrict access to phpMyAdmin and Mailpit in production environments
 - Never commit .env file with real credentials
-
-## License
-
-MIT License
-
-Copyright (c) 2025 [optional: Snetcher]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
 
 ## Contributing
 
@@ -395,7 +426,7 @@ When reporting issues, please include:
 2. Problem Description:
    - What happened?
    - What was expected?
-   - Steps to reproduce 
+   - Steps to reproduce
 
 ## CI/CD
 
@@ -447,74 +478,26 @@ curl http://localhost:8025  # Should return 200
 docker compose exec db mariadb -uroot -p${DB_ROOT_PASSWORD} -e "SELECT 1;"
 ```
 
-## Versioning
+## License
 
-This project follows [Semantic Versioning](https://semver.org/).
+MIT License
 
-Current version: **0.1.0**
+Copyright (c) 2025 [optional: Snetcher]
 
-Version numbers are synchronized across all components:
-- Docker environment
-- WordPress theme
-- WordPress plugin
-- Documentation
-- Configuration files
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-### Version History
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
-
-### Version Components
-
-- Major version: Breaking changes
-- Minor version: New features, backwards compatible
-- Patch version: Bug fixes, backwards compatible
-
-### Version Files
-
-Version information can be found in:
-- `/VERSION` - Central version file
-- `theme/package.json` - Theme version
-- `plugin/package.json` - Plugin version
-- `docker-compose.yml` - Environment version
-- `CHANGELOG.md` - Version history 
-
-## Plugin Management
-
-The project includes an automatic plugin manager (`/wp-content/mu-plugins/manage-plugins.php`) that performs the following actions during WordPress installation or theme activation:
-
-### Automatic Plugin Installation
-- Admin and Site Enhancements (ASE)
-- UpdraftPlus: WP Backup & Migration Plugin
-
-### Default Plugin Removal
-- Akismet Anti-spam
-- Hello Dolly
-
-### Automatic Configuration
-- Sets permalink structure to `/%postname%/` format
-- Activates all installed plugins
-
-### Features
-- Automatic execution during first installation
-- Settings verification and restoration during theme activation
-- Detailed operation logging
-- Safe removal of unnecessary plugins
-- Automatic activation after installation
-
-## exec	:	Execute command in container (usage: make exec s=service cmd=command)
-```bash
-.PHONY: exec
-exec:
-	@if not defined s ( \
-		echo Please specify a service (s=service). Available services: wp, db, mailpit, phpmyadmin & \
-		echo Example: make exec s=wp cmd="wp plugin list" & \
-		exit /b 1 \
-	)
-	@if not defined cmd ( \
-		echo Please specify a command (cmd=command) & \
-		echo Example: make exec s=wp cmd="wp plugin list" & \
-		exit /b 1 \
-	)
-	@docker compose exec $(s) powershell -Command "$(cmd)" 
-```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

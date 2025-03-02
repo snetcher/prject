@@ -68,59 +68,58 @@
     </header>
 
     <script>
-        // Menu close function
-        function closeMenu() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu toggle functionality
             const menuButton = document.querySelector('.menu-toggle');
             const mainNav = document.querySelector('.main-navigation');
-            menuButton.setAttribute('aria-expanded', 'false');
-            mainNav.classList.remove('is-active');
-        }
-
-        // Menu button click handler
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            const mainNav = document.querySelector('.main-navigation');
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
-            this.setAttribute('aria-expanded', !isExpanded);
-            mainNav.classList.toggle('is-active');
-        });
-
-        // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
-            const menuButton = document.querySelector('.menu-toggle');
-            const mainNav = document.querySelector('.main-navigation');
-            const isMenuOpen = mainNav.classList.contains('is-active');
             
-            if (isMenuOpen && !mainNav.contains(e.target) && !menuButton.contains(e.target)) {
-                closeMenu();
+            if (menuButton && mainNav) {
+                menuButton.addEventListener('click', function() {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    mainNav.classList.toggle('is-active');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (mainNav.classList.contains('is-active') && 
+                        !mainNav.contains(e.target) && 
+                        !menuButton.contains(e.target)) {
+                        menuButton.setAttribute('aria-expanded', 'false');
+                        mainNav.classList.remove('is-active');
+                    }
+                });
+
+                // Prevent closing when clicking inside menu
+                mainNav.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
             }
-        });
 
-        // Prevent closing when clicking inside menu
-        document.querySelector('.main-navigation').addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
-
-        // Header hide/show on scroll
-        let lastScroll = 0;
-        const header = document.querySelector('.site-header');
-        
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
+            // Header hide/show on scroll
+            let lastScroll = 0;
+            const header = document.querySelector('.site-header');
             
-            if (currentScroll <= 0) {
-                header.classList.remove('is-hidden');
-                return;
+            if (header) {
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.pageYOffset;
+                    
+                    if (currentScroll <= 0) {
+                        header.classList.remove('is-hidden');
+                        return;
+                    }
+                    
+                    if (currentScroll > lastScroll && !header.classList.contains('is-hidden')) {
+                        // Scrolling down
+                        header.classList.add('is-hidden');
+                    } else if (currentScroll < lastScroll && header.classList.contains('is-hidden')) {
+                        // Scrolling up
+                        header.classList.remove('is-hidden');
+                    }
+                    
+                    lastScroll = currentScroll;
+                });
             }
-            
-            if (currentScroll > lastScroll && !header.classList.contains('is-hidden')) {
-                // Scrolling down
-                header.classList.add('is-hidden');
-            } else if (currentScroll < lastScroll && header.classList.contains('is-hidden')) {
-                // Scrolling up
-                header.classList.remove('is-hidden');
-            }
-            
-            lastScroll = currentScroll;
         });
     </script>
 

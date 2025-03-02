@@ -14,5 +14,9 @@ RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli
 # Verify WP-CLI installation
 RUN wp --info
 
+# Remove Akismet and Hello Dolly plugins
+RUN rm -rf /usr/src/wordpress/wp-content/plugins/akismet \
+    && rm -rf /usr/src/wordpress/wp-content/plugins/hello.php
+
 # Set working directory
 WORKDIR /var/www/html

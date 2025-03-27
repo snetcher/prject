@@ -17,7 +17,7 @@ services:
   wp:
     container_name: ${PROJECT_NAME}_wp
     image: wordpress:latest
-    restart: 'always'
+    restart: 'no'
     ports:
       - '8080:80'
     environment:
@@ -43,7 +43,7 @@ services:
   pma:
     container_name: ${PROJECT_NAME}_pma
     image: phpmyadmin/phpmyadmin
-    restart: 'always'
+    restart: 'no'
     environment:
       PMA_HOST: db
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}

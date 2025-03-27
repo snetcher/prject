@@ -2,48 +2,78 @@
 /**
  * The main template file
  *
- * @package WordPress
- * @subpackage WP_Start_Theme
- * @since 0.1.0
+ * This is the most generic template file in a WordPress theme
+ * and one of the two required files for a theme (the other being style.css).
+ * It is used to display a page when nothing more specific matches a query.
+ * E.g., it puts together the home page when no home.php file exists.
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
+ *
+ * @package voice-smm-theme
  */
 
 get_header();
 ?>
 
-<?php if (have_posts()) : ?>
-    <?php if (is_home() && !is_front_page()) : ?>
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1 class="hero-title"><?php single_post_title(); ?></h1>
-                <?php if (get_the_excerpt()) : ?>
-                    <div class="hero-meta"><?php echo get_the_excerpt(); ?></div>
-                <?php endif; ?>
-            </div>
-        </section>
-    <?php endif; ?>
-<?php endif; ?>
-
-<div class="site-content-wrap">
-    <div class="content-area">
-        <div class="main-content">
-            <main id="primary" class="site-main">
-                <?php
-                if (have_posts()) :
-                    /* Start the Loop */
-                    while (have_posts()) :
-                        the_post();
-                        get_template_part('template-parts/content', get_post_type());
-                    endwhile;
-
-                    the_posts_navigation();
-                else :
-                    get_template_part('template-parts/content', 'none');
-                endif;
+<main id="primary" class="site-main">
+    <div class="container">
+        <?php
+        if (have_posts()) :
+            if (is_home() && !is_front_page()) :
                 ?>
-            </main>
-        </div>
-        <?php get_sidebar(); ?>
-    </div>
-</div>
+                <header>
+                    <h1 class="page-title"><?php single_post_title(); ?></h1>
+                </header>
+                <?php
+            endif;
 
-<?php get_footer(); ?> 
+            /* Start the Loop */
+            while (have_posts()) :
+                the_post();
+                ?>
+                <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+                    <header class="entry-header">
+                        <?php
+                        if (is_singular()) :
+                            the_title('<h1 class="entry-title">', '</h1>');
+                        else :
+                            the_title('<h2 class="entry-title"><a href="' . esc_url(get_permalink()) . '" rel="bookmark">', '</a></h2>');
+                        endif;
+                        ?>
+                    </header>
+
+                    <div class="entry-content">
+                        <?php
+                        the_content(
+                            sprintf(
+                                wp_kses(
+                                    /* translators: %s: Name of current post. Only visible to screen readers */
+                                    __('Continue reading<span class="screen-reader-text"> "%s"</span>', 'voice-smm-theme'),
+                                    array(
+                                        'span' => array(
+                                            'class' => array(),
+                                        ),
+                                    )
+                                ),
+                                wp_kses_post(get_the_title())
+                            )
+                        );
+                        ?>
+                    </div>
+                </article>
+                <?php
+            endwhile;
+
+            the_posts_navigation();
+
+        else :
+            ?>
+            <p><?php esc_html_e('No posts found.', 'voice-smm-theme'); ?></p>
+            <?php
+        endif;
+        ?>
+    </div>
+</main><!-- #primary -->
+
+<?php
+get_footer();

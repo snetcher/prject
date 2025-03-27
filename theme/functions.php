@@ -1,123 +1,87 @@
 <?php
 /**
- * Theme functions and definitions
- *
- * @package WordPress
- * @subpackage WP_Start_Theme
- * @since 0.1.0
+ * Voice SMM functions and definitions
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+// Include theme options
+require get_template_directory() . '/inc/theme-options.php';
+require get_template_directory() . '/inc/social-icons.php';
+require get_template_directory() . '/inc/polylang_init.php';
+
+// Connecting theme styles
+function voice_smm_styles() {
+    wp_enqueue_style('theme-fonts', get_template_directory_uri() . '/assets/css/fonts.css', array(), '1.0.0');
+    wp_enqueue_style('theme-style', get_template_directory_uri() . '/assets/css/theme.css', array(), '1.0.0');
+    wp_enqueue_script('navigation-js', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
 }
+add_action('wp_enqueue_scripts', 'voice_smm_styles');
 
-// Custom template tags
-require get_template_directory() . '/inc/template-tags.php';
+// Registering support for various WordPress features
+function voice_smm_setup() {
 
-// Customizer additions
-require get_template_directory() . '/inc/customizer.php';
-
-// Theme Setup
-function wp_start_theme_setup() {
-    // Add default posts and comments RSS feed links to head
-    add_theme_support('automatic-feed-links');
-
-    // Let WordPress manage the document title
+    // Header support
     add_theme_support('title-tag');
-
-    // Enable support for Post Thumbnails on posts and pages
+    
+    // Thumbnail support
     add_theme_support('post-thumbnails');
-
-    // Add support for responsive embeds
-    add_theme_support('responsive-embeds');
-
-    // Add support for custom logo
-    add_theme_support('custom-logo', array(
-        'height'      => 100,
-        'width'       => 400,
-        'flex-width'  => true,
-        'flex-height' => true,
-    ));
-
-    // Add support for full and wide align images
+    
+    // Support for wide images for Gutenberg
     add_theme_support('align-wide');
+    
+    // Custom logo support
+    add_theme_support('custom-logo', array(
+        'height'      => 56,
+        'width'       => 136,
+        'flex-height' => true,
+        'flex-width'  => true,
+        'unlink-homepage-logo' => false,
+    ));
+    
+    // HTML5 support
+    add_theme_support('html5', array(
+        'search-form',
+        'comment-form',
+        'comment-list',
+        'gallery',
+        'caption',
+        'style',
+        'script',
+    ));
 
-    // Register navigation menus
+    add_theme_support('editor-color-palette', [
+        [
+            'name'  => __('Pink', 'textdomain'),
+            'slug'  => 'pink_color',
+            'color' => '#E15197',
+        ],
+        [
+            'name'  => __('Blue', 'textdomain'),
+            'slug'  => 'blue_color',
+            'color' => '#2799D6',
+        ],
+        [
+            'name'  => __('Dark', 'textdomain'),
+            'slug'  => 'dark_color',
+            'color' => '#2D2D2C',
+        ],
+    ]);
+    
+    // Menu registration
     register_nav_menus(array(
-        'primary' => __('Primary Menu', 'wp-start-theme'),
-        'footer'  => __('Footer Menu', 'wp-start-theme'),
+        'primary' => esc_html__('Primary Menu', 'voice-smm-theme'),
+        'footer' => esc_html__('Footer Menu', 'voice-smm-theme'),
     ));
 }
-add_action('after_setup_theme', 'wp_start_theme_setup');
+add_action('after_setup_theme', 'voice_smm_setup');
 
-// Enqueue scripts and styles
-function wp_start_theme_scripts() {
-    // Google Fonts
-    wp_enqueue_style('wp-start-theme-fonts', 'https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@300;400;500;600;700&display=swap', array(), null);
-
-    // Theme stylesheet
-    wp_enqueue_style('wp-start-theme-style', get_stylesheet_uri(), array(), wp_get_theme()->get('Version'));
-    wp_enqueue_style('wp-start-theme-main-style', get_template_directory_uri() . '/assets/css/style.css', array('wp-start-theme-fonts'), wp_get_theme()->get('Version'));
-
-    // Theme script
-    wp_enqueue_script('wp-start-theme-script', get_template_directory_uri() . '/assets/js/main.js', array('jquery'), wp_get_theme()->get('Version'), true);
-
-    // Comment reply script
-    if (is_singular() && comments_open() && get_option('thread_comments')) {
-        wp_enqueue_script('comment-reply');
-    }
-
-    // Скрипт для управления шапкой
-    wp_enqueue_script('theme-header', get_template_directory_uri() . '/assets/js/header.js', array(), '1.0', true);
-
-    // Скрипт для кнопки прокрутки вверх
-    wp_enqueue_script('theme-back-to-top', get_template_directory_uri() . '/assets/js/back-to-top.js', array(), '1.0', true);
+function voice_smm_load_theme_textdomain() {
+    load_theme_textdomain('voice-smm-theme', get_template_directory() . '/languages');
 }
-add_action('wp_enqueue_scripts', 'wp_start_theme_scripts');
+add_action('after_setup_theme', 'voice_smm_load_theme_textdomain');
 
-// Register widget areas
-function wp_start_theme_widgets_init() {
-    register_sidebar(array(
-        'name'          => __('Sidebar', 'wp-start-theme'),
-        'id'            => 'sidebar-1',
-        'description'   => __('Add widgets here to appear in your sidebar.', 'wp-start-theme'),
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title">',
-        'after_title'   => '</h2>',
-    ));
-
-    register_sidebar(array(
-        'name'          => __('Footer Widget Area', 'wp-start-theme'),
-        'id'            => 'footer-1',
-        'description'   => __('Add widgets here to appear in your footer.', 'wp-start-theme'),
-        'before_widget' => '<section id="%1$s" class="widget %2$s">',
-        'after_widget'  => '</section>',
-        'before_title'  => '<h2 class="widget-title">',
-        'after_title'   => '</h2>',
-    ));
+function voice_smm_scripts() {
+    wp_enqueue_style('voice-smm-theme-style', get_stylesheet_uri(), array(), _S_VERSION);
+    wp_enqueue_style('voice-smm-social-icons', get_template_directory_uri() . '/assets/css/social-icons.css', array(), _S_VERSION);
+    // ... existing code ...
 }
-add_action('widgets_init', 'wp_start_theme_widgets_init');
-
-// Add post thumbnail function
-if (!function_exists('wp_start_theme_post_thumbnail')) :
-    function wp_start_theme_post_thumbnail() {
-        if (post_password_required() || is_attachment() || !has_post_thumbnail()) {
-            return;
-        }
-
-        if (is_singular()) :
-            ?>
-            <div class="post-thumbnail">
-                <?php the_post_thumbnail(); ?>
-            </div>
-            <?php
-        else :
-            ?>
-            <a class="post-thumbnail" href="<?php the_permalink(); ?>" aria-hidden="true" tabindex="-1">
-                <?php the_post_thumbnail('post-thumbnail', array('alt' => the_title_attribute(array('echo' => false)))); ?>
-            </a>
-            <?php
-        endif;
-    }
-endif; 
+add_action('wp_enqueue_scripts', 'voice_smm_scripts');

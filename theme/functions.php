@@ -3,16 +3,20 @@
  * Voice SMM functions and definitions
  */
 
+if (!defined('_S_VERSION')) {
+    define('_S_VERSION', '1.0.0');
+}
+
 // Include theme options
 require get_template_directory() . '/inc/theme-options.php';
 require get_template_directory() . '/inc/social-icons.php';
 require get_template_directory() . '/inc/polylang_init.php';
 
-// Connecting theme styles
+// Connecting theme styles and scripts
 function voice_smm_styles() {
-    wp_enqueue_style('theme-fonts', get_template_directory_uri() . '/assets/css/fonts.css', array(), '1.0.0');
-    wp_enqueue_style('theme-style', get_template_directory_uri() . '/assets/css/theme.css', array(), '1.0.0');
-    wp_enqueue_script('navigation-js', get_template_directory_uri() . '/assets/js/navigation.js', array(), '1.0.0', true);
+    wp_enqueue_style('theme-fonts', get_template_directory_uri() . '/assets/css/fonts.css', array(), _S_VERSION);
+    wp_enqueue_style('theme-style', get_template_directory_uri() . '/assets/css/theme.css', array(), _S_VERSION);
+    wp_enqueue_script('navigation-js', get_template_directory_uri() . '/assets/js/navigation.js', array(), _S_VERSION, true);
 }
 add_action('wp_enqueue_scripts', 'voice_smm_styles');
 
@@ -78,10 +82,3 @@ function voice_smm_load_theme_textdomain() {
     load_theme_textdomain('voice-smm-theme', get_template_directory() . '/languages');
 }
 add_action('after_setup_theme', 'voice_smm_load_theme_textdomain');
-
-function voice_smm_scripts() {
-    wp_enqueue_style('voice-smm-theme-style', get_stylesheet_uri(), array(), _S_VERSION);
-    wp_enqueue_style('voice-smm-social-icons', get_template_directory_uri() . '/assets/css/social-icons.css', array(), _S_VERSION);
-    // ... existing code ...
-}
-add_action('wp_enqueue_scripts', 'voice_smm_scripts');

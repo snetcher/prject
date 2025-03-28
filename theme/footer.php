@@ -6,10 +6,13 @@
         <div class="container">
             <div class="footer-widgets">
                 <div class="footer-widget">
+                    
                     <a href="/">
                         <img src="<?php echo get_template_directory_uri(); ?>/assets/images/footer_logo.svg" alt="logo">
                     </a>
+
                     <h3 class="widget-title visually-hidden"><?php pll_e('Social Networks'); ?></h3>
+                    
                     <div class="social-links">
                         <?php
                         $social_networks = array(
@@ -31,18 +34,26 @@
                             )
                         );
 
-                        foreach ($social_networks as $network => $data) {
-                            if (!empty($data['url'])) {
-                                printf(
-                                    '<a href="%s" class="social-link %s" target="_blank" rel="noopener noreferrer" aria-label="%s"><svg class="social-icon"><use xlink:href="#%s"></use></svg></a>',
-                                    esc_url($data['url']),
-                                    esc_attr($network),
-                                    esc_attr($data['label']),
-                                    esc_attr($network)
-                                );
-                            }
-                        }
-                        ?>
+                        if($social_networks['facebook']['url']): ?>
+                            <a href="<?php echo esc_url($social_networks['facebook']['url']); ?>" class="social-link facebook" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($social_networks['facebook']['label']); ?>">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/social-facebook.png" alt="<?php echo esc_attr($social_networks['facebook']['label']); ?>">
+                            </a>
+                        <?php endif; ?>
+                        <?php if($social_networks['instagram']['url']): ?>
+                            <a href="<?php echo esc_url($social_networks['instagram']['url']); ?>" class="social-link instagram" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($social_networks['instagram']['label']); ?>">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/social-instagram.png" alt="<?php echo esc_attr($social_networks['instagram']['label']); ?>">
+                            </a>
+                        <?php endif; ?>
+                        <?php if($social_networks['whatsapp']['url']): ?>
+                            <a href="<?php echo esc_url($social_networks['whatsapp']['url']); ?>" class="social-link whatsapp" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($social_networks['whatsapp']['label']); ?>">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/social-whatsup.png" alt="<?php echo esc_attr($social_networks['whatsapp']['label']); ?>">
+                            </a>
+                        <?php endif; ?> 
+                        <?php if($social_networks['telegram']['url']): ?>
+                            <a href="<?php echo esc_url($social_networks['telegram']['url']); ?>" class="social-link telegram" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr($social_networks['telegram']['label']); ?>">
+                                <img src="<?php echo get_template_directory_uri(); ?>/assets/images/social-telegram.png" alt="<?php echo esc_attr($social_networks['telegram']['label']); ?>">
+                            </a>
+                        <?php endif; ?>
                     </div>
                     
                     <h3 class="widget-title visually-hidden"><?php pll_e('Language Switcher'); ?></h3>

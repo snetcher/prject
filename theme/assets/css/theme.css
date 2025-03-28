@@ -656,3 +656,38 @@ a:hover {
     width: 20px;
     height: 20px;
 }
+
+.social-test img {
+    width: 24px;
+    height: 24px;
+    filter: grayscale(0%);
+    transition: filter 0.3s ease;
+}
+
+.social-test img:hover {
+    filter: grayscale(100%);
+}
+
+/* Вариант 1: Полностью черно-белый */
+/* .image {
+    transition: filter 0.3s ease;
+}
+
+.image:hover {
+    filter: grayscale(100%);
+} */
+
+/* Вариант 2: Черно-белый с настройкой контраста */
+/* .image:hover {
+    filter: grayscale(100%) contrast(120%);
+} */
+
+/* Вариант 3: Постепенное обесцвечивание */
+/* .image {
+    filter: grayscale(0%);
+    transition: filter 0.3s ease;
+}
+
+.image:hover {
+    filter: grayscale(100%);
+} */
